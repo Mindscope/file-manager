@@ -12,6 +12,19 @@
 
         <link rel="stylesheet" href="assets/css/main.css">
         <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
+
+        <!-- templates -->
+        <script type="text/template" id="file-list-template">
+            <ul></ul>
+        </script>
+        <script type="text/template" id="file-template">
+            <li>
+                <span><%= file.filename %></span>
+                <span><%= file.fileType %></span>
+                <span><%= file.size %> (kb)</span>
+            </li>
+        </script>
+        <!-- /templates -->
     </head>
     <body>
         <!--[if lt IE 8]>
