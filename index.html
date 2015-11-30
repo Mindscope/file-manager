@@ -15,7 +15,7 @@
 
         <!-- templates -->
         <script type="text/template" id="file-list-template">
-            <div id="file-list-table">
+            <div id="file-list-table" class="file-list">
                 <table >
                     <thead>
                         <tr>
@@ -23,6 +23,20 @@
                             <th class="sortable" data-sort="filetype">File Type&nbsp;<i class="glyphicon"></i></th>
                             <th class="sortable" data-sort="size">Size (kb)&nbsp;<i class="glyphicon"></i></th>
                         </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </script>
+        <script type="text/template" id="bookmark-list-template">
+            <div id="bookmark-list-table" class="file-list">
+                <table >
+                    <thead>
+                    <tr>
+                        <th class="sortable" data-sort="filename">File Name&nbsp;<i class="glyphicon"></i></i></th>
+                        <th class="sortable" data-sort="filetype">File Type&nbsp;<i class="glyphicon"></i></th>
+                        <th class="sortable" data-sort="size">Size (kb)&nbsp;<i class="glyphicon"></i></th>
+                    </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
