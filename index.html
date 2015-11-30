@@ -15,22 +15,42 @@
 
         <!-- templates -->
         <script type="text/template" id="file-list-template">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="sortable" data-sort="filename">File Name</th>
-                        <th class="sortable" data-sort="filetype">File Type</th>
-                        <th class="sortable" data-sort="size">Size (kb)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="file-list-table">
+                <table >
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="filename">File Name&nbsp;<i class="glyphicon"></i></i></th>
+                            <th class="sortable" data-sort="filetype">File Type&nbsp;<i class="glyphicon"></i></th>
+                            <th class="sortable" data-sort="size">Size (kb)&nbsp;<i class="glyphicon"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </script>
+        <script type="text/template" id="file-actions-template">
+            <p>Actions</p>
+            <div>
+                <% if (typeof(actions) == "undefined") { %>
+                <span>Select a file on the left by clicking on it</span>
+                <% } else { %>
+                <ul>
+                    <% _.each(actions, function(action){ %>
+                    <li>
+                        <i class="glyphicon <%= action %>"></i><a class="action" data-action="<%= action %>" href="#"><%= action %></a>
+                    </li>
+                    <% }); %>
+                </ul>
+                <div>
+                    File selected:&nbsp;<b><%= selectedFile.attributes.filename %></b>
+                </div>
+                <% } %>
+            </div>
         </script>
         <script type="text/template" id="file-template">
             <td><%= file.filename %></td>
             <td><%= file.filetype %></td>
-            <td><%= file.size %> (kb)</td>
+            <td><%= file.size %></td>
         </script>
         <!-- /templates -->
     </head>
@@ -40,7 +60,9 @@
         <![endif]-->
 
         <!-- container -->
-        <div id="container"></div>
+        <div id="container">
+            <div id="file-list"></div>
+        </div>
         <!-- /container -->
 
         <script type="text/javascript" src="assets/js/vendor/jquery-1.11.2.min.js"></script>
