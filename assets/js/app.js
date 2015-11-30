@@ -1,38 +1,71 @@
-var LOCALSTORAGE_NAME = "files-store";
+var LOCALSTORAGE_NAME = 'files-store',
+    AVAILABLE_ACTIONS = {
+        DOWNLOAD: 'download',
+        PREVIEW: 'preview',
+        BOOKMARK: 'bookmark',
+        EDIT: 'edit'
+    },
+    INITIAL_DATA = [
+        {id: 1, 'filename': 'index.html', 'size': 13},
+        {id: 2, 'filename': 'contact.html', 'size': 12},
+        {id: 3, 'filename': 'sample.png', 'size': 65}
+    ],
+    DEFAULT_ACTIONS_PER_TYPE = {
+        'default': null,
+        'html': [
+            AVAILABLE_ACTIONS.DOWNLOAD,
+            AVAILABLE_ACTIONS.BOOKMARK,
+            AVAILABLE_ACTIONS.PREVIEW,
+            AVAILABLE_ACTIONS.EDIT
+        ],
+        'jpg': [AVAILABLE_ACTIONS.DOWNLOAD, AVAILABLE_ACTIONS.BOOKMARK, AVAILABLE_ACTIONS.PREVIEW],
+        'png': [AVAILABLE_ACTIONS.DOWNLOAD, AVAILABLE_ACTIONS.BOOKMARK, AVAILABLE_ACTIONS.PREVIEW],
+        'txt': [
+            AVAILABLE_ACTIONS.DOWNLOAD,
+            AVAILABLE_ACTIONS.BOOKMARK,
+            AVAILABLE_ACTIONS.PREVIEW,
+            AVAILABLE_ACTIONS.EDIT
+        ]
+    };
 
-var Filer = {},
-    initialData = [
-        {"filename": "index.html", "size": 13},
-        {"filename": "contact.html", "size": 12},
-        {"filename": "sample.png", "size": 65}
-    ];
+var Filer = {};
 
 Filer.File = Backbone.Model.extend({
     defaults: {
-        "filename": undefined
+        'id': null,
+        'filename': undefined,
+        'content': undefined,
+        'actions': []
     },
     initialize : function() {
         // Set fileType attribute according to file extension
-        var filetype, extension = this.attributes.filename.split(".").pop();
+        var filetype,
+            extension = this.attributes.filename.split('.').pop();
         switch( extension ) {
-            case "html":
-                filetype = "Web page";
+            case 'html':
+                filetype = 'Web page';
                 break;
-            case "png":
-                filetype = "PNG image";
+            case 'png':
+                filetype = 'PNG image';
                 break;
-            case "jpeg":
-            case "jpg":
-                filetype = "JPEG image";
+            case 'jpeg':
+            case 'jpg':
+                filetype = 'JPEG image';
+                extension = 'jpg';
                 break;
-            case "txt":
-                filetype = "Text file";
+            case 'txt':
+                filetype = 'Text file';
                 break;
             default:
-                filetype = "Unknown file type"
+                filetype = 'Unknown file type'
         }
 
         this.set('filetype', filetype);
+
+        // Check if extension is configured for
+        // default actions per file type
+        if (extension in DEFAULT_ACTIONS_PER_TYPE)
+            this.set('actions', DEFAULT_ACTIONS_PER_TYPE[extension]);
     }
 });
 
@@ -42,9 +75,9 @@ Filer.FileCollection = Backbone.Collection.extend({
 
     // Available sort strategies
     strategies: {
-        filename: function (file) { return file.get("filename"); },
-        filetype: function (file) { return file.get("filetype"); },
-        size: function (file) { return file.get("size"); },
+        filename: function (file) { return file.get('filename'); },
+        filetype: function (file) { return file.get('filetype'); },
+        size: function (file) { return file.get('size'); }
     },
 
     // Current property defined as sort attribute
@@ -72,13 +105,19 @@ Filer.FileCollection = Backbone.Collection.extend({
     fetch: function(options) {
         // check if data is already on localStorage
         if (!localStorage.getItem(LOCALSTORAGE_NAME)) {
-            this.add(initialData);
+            this.add(INITIAL_DATA);
         } else {
             return Backbone.Collection.prototype.fetch.call(this, options);
         }
     }
 });
 
+/**
+ * Reverts the sort order for a Collection's comparator
+ *
+ * @param sortByFunction
+ * @returns {Function}
+ */
 function reverseSortBy(sortByFunction) {
     return function(left, right) {
         var l = sortByFunction(left);
