@@ -28,14 +28,54 @@ var LOCALSTORAGE_NAME = 'files-store',
         ]
     };
 
-var Filer = {};
+var Filer = {
+    views: {},
+    Extensions: {},
+    router: null,
+
+    init: function () {
+
+        this.instance = new Filer.views.App();
+        Backbone.history.start();
+    }
+};
+
+Filer.Router = Backbone.Router.extend({
+
+    routes: {
+        '': 'home',
+        //'bookmarks': 'bookmarks'
+        //'create': 'create',
+        //'edit': 'edit',
+    },
+
+    home: function () {
+        // Load initial data into files collection
+        var filesCollection = new Filer.FileCollection();
+        var view = new Filer.views.FileListView({collection: filesCollection});
+
+        Filer.instance.goto(view);
+    },
+
+    /*bookmarks: function() {
+        console.log("Hello bookmarks");
+
+        var filesCollection = new Filer.FileCollection();
+        var bookmarked = new Filer.FileCollection(filesCollection.where({ bookmarked : true }));
+
+        var view = new Filer.views.BookmarkListView({collection: bookmarked});
+
+        Filer.instance.goto(view);
+    }*/
+});
 
 Filer.File = Backbone.Model.extend({
     defaults: {
         'id': null,
         'filename': undefined,
         'content': undefined,
-        'actions': []
+        'actions': [],
+        'bookmarked': false
     },
     initialize : function() {
         // Set fileType attribute according to file extension
@@ -112,27 +152,80 @@ Filer.FileCollection = Backbone.Collection.extend({
     }
 });
 
-/**
- * Reverts the sort order for a Collection's comparator
- *
- * @param sortByFunction
- * @returns {Function}
- */
-function reverseSortBy(sortByFunction) {
-    return function(left, right) {
-        var l = sortByFunction(left);
-        var r = sortByFunction(right);
+Filer.Extensions.View = Backbone.View.extend({
+    initialize: function () {
+        this.router = new Filer.Router();
+    },
 
-        if (l === void 0) return -1;
-        if (r === void 0) return 1;
+    render: function( options ) {
 
-        return l < r ? 1 : l > r ? -1 : 0;
-    };
-}
+        options = options || {};
 
-var FileListView = Backbone.View.extend({
-    el: '#file-list',
-    tagName: 'table',
+        if (options.page === true) {
+            this.$el.addClass('page');
+        }
+
+        return this;
+
+    },
+
+    transitionIn: function ( callback ) {
+
+        var view = this,
+            delay;
+
+        var transitionIn = function () {
+            view.$el.addClass('is-visible');
+            view.$el.one('transitionend', function () {
+                if (_.isFunction(callback)) {
+                    callback();
+                }
+            })
+        };
+
+        _.delay(transitionIn, 20);
+
+    },
+
+    transitionOut: function ( callback ) {
+
+        var view = this;
+
+        view.$el.removeClass( 'is-visible' );
+        view.$el.one('transitionend', function () {
+            if (_.isFunction( callback )) {
+                callback();
+            }
+        });
+
+    }
+
+});
+
+Filer.views.App = Filer.Extensions.View.extend({
+
+    el: 'body',
+    goto: function (view) {
+
+        var previous = this.currentPage || null;
+        var next = view;
+
+        if (previous) {
+            previous.transitionOut(function () {
+                previous.remove();
+            });
+        }
+
+        next.render({ page: true });
+        this.$el.append( next.$el );
+        next.transitionIn();
+        this.currentPage = next;
+    }
+});
+
+Filer.views.FileListView = Filer.Extensions.View.extend({
+    id: 'file-list',
+    templateName: '#file-list-template',
 
     // Need to respond to clicks on the table headers
     events: {
@@ -144,10 +237,9 @@ var FileListView = Backbone.View.extend({
     actionsView: null,
 
     initialize: function() {
-        this.template = _.template($('#file-list-template').html());
-        this.render();
+        this.template = _.template($(this.templateName).html());
 
-        this.collection.on('add', this.renderFile, this);
+        //this.collection.on('add', this.renderFile, this);
 
         // fetch initial data
         this.collection.fetch();
@@ -156,9 +248,13 @@ var FileListView = Backbone.View.extend({
         this.$el.empty();
         this.$el.append(this.template());
 
+        //this.collection.each(this.renderFile);
+
+        console.log("rendering...");
+
         this.renderActions();
 
-        return this;
+        return Filer.Extensions.View.prototype.render.apply(this, arguments);
     },
 
     /**
@@ -172,7 +268,7 @@ var FileListView = Backbone.View.extend({
         if (this.actionsView)
             this.actionsView.close();
 
-        this.actionsView = new ActionListView(actionParams);
+        this.actionsView = new Filer.views.ActionListView(actionParams);
         this.actionsView.on('performAction', this.performAction, this);
         this.$el.append(this.actionsView.render().el);
     },
@@ -192,7 +288,7 @@ var FileListView = Backbone.View.extend({
      * @param files
      */
     renderFile: function(files) {
-        var newFileView = new FileView({model: files.toJSON()});
+        var newFileView = new Filer.views.FileView({model: files.toJSON()});
         files.save();
 
         var $tbody = this.$('tbody');
@@ -253,7 +349,7 @@ var FileListView = Backbone.View.extend({
     },
 
     /**
-     * Refreshes the file list. Useforl for sorting and File creation/deletion
+     * Refreshes the file list. Useful for sorting and File creation/deletion
      */
     refreshList: function() {
         // Render file list
@@ -262,7 +358,7 @@ var FileListView = Backbone.View.extend({
     }
 });
 
-var FileView = Backbone.View.extend({
+Filer.views.FileView = Backbone.View.extend({
     tagName: 'tr',
     className: 'file',
     initialize: function() {
@@ -274,11 +370,12 @@ var FileView = Backbone.View.extend({
 
         // Add id to element for future reference
         this.$el.data('id', this.model.id);
+
         return this;
     }
 });
 
-var ActionListView = Backbone.View.extend({
+Filer.views.ActionListView = Backbone.View.extend({
     id: 'file-actions',
     events: {
         'click .action': 'callAction'
@@ -296,7 +393,8 @@ var ActionListView = Backbone.View.extend({
         var params = $.extend(this.actions, {selectedFile: this.parent.selectedFile});
 
         this.$el.html(this.template(params));
-        return this;
+
+        return Filer.Extensions.View.prototype.render.apply(this, arguments);
     },
 
     /**
@@ -319,6 +417,34 @@ var ActionListView = Backbone.View.extend({
     }
 });
 
-// Load initial data into files collection
-var filesCollection = new Filer.FileCollection();
-var filerAppView = new FileListView({collection: filesCollection});
+/*Filer.views.BookmarkListView = Filer.views.FileListView.extend({
+    className: 'bookmark-list',
+    templateName: '#bookmark-list-template',
+
+    initialize: function() {
+        this.template = _.template($(this.templateName).html());
+        this.render();
+    }
+});*/
+
+$(function() {
+    Filer.init();
+});
+
+/**
+ * Reverts the sort order for a Collection's comparator
+ *
+ * @param sortByFunction
+ * @returns {Function}
+ */
+function reverseSortBy(sortByFunction) {
+    return function(left, right) {
+        var l = sortByFunction(left);
+        var r = sortByFunction(right);
+
+        if (l === void 0) return -1;
+        if (r === void 0) return 1;
+
+        return l < r ? 1 : l > r ? -1 : 0;
+    };
+}
