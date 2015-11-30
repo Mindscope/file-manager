@@ -131,20 +131,23 @@ function reverseSortBy(sortByFunction) {
 }
 
 var FileListView = Backbone.View.extend({
-    el: '#container',
+    el: '#file-list',
     tagName: 'table',
-    className: 'file-list',
 
     // Need to respond to clicks on the table headers
     events: {
-        "click th.sortable": "headerClick"
+        'click th.sortable': 'headerClick',
+        'click .file': 'fileClick'
     },
+
+    selectedFile: null,
+    actionsView: null,
 
     initialize: function() {
         this.template = _.template($('#file-list-template').html());
         this.render();
 
-        this.collection.on("add", this.renderFile, this);
+        this.collection.on('add', this.renderFile, this);
 
         // fetch initial data
         this.collection.fetch();
@@ -153,45 +156,109 @@ var FileListView = Backbone.View.extend({
         this.$el.empty();
         this.$el.append(this.template());
 
+        this.renderActions();
+
         return this;
     },
+
+    /**
+     * Renders all available actions for the current selectedFile
+     */
+    renderActions: function() {
+        var actionParams = {parent: this};
+        if (this.selectedFile !== null)
+            actionParams['actions'] = this.selectedFile.get('actions');
+
+        if (this.actionsView)
+            this.actionsView.close();
+
+        this.actionsView = new ActionListView(actionParams);
+        this.actionsView.on('performAction', this.performAction, this);
+        this.$el.append(this.actionsView.render().el);
+    },
+
+    /**
+     * Performs the given action on the current selectedFile
+     *
+     * @param action
+     */
+    performAction: function(action) {
+        console.log(action);
+    },
+
+    /**
+     * Render a single File instance
+     *
+     * @param files
+     */
     renderFile: function(files) {
         var newFileView = new FileView({model: files.toJSON()});
         files.save();
 
-        var $tbody = this.$("tbody");
+        var $tbody = this.$('tbody');
         $tbody.append(newFileView.render().el);
     },
+
+    /**
+     * Event triggered by a table header click
+     *
+     * @param event
+     */
     headerClick: function(event){
         var $el = $(event.currentTarget),
-            sortProperty = $el.attr("data-sort");
+            sortProperty = $el.attr('data-sort');
 
         // If column is already sorting then change sorting order
         // by calling collection's method and change element's classes
-        if ($el.hasClass("selected")) {
-            if ($el.hasClass("asc")) {
+        if ($el.hasClass('selected')) {
+            if ($el.hasClass('asc')) {
                 $el
-                    .addClass("desc")
-                    .removeClass("asc");
+                    .addClass('desc')
+                    .removeClass('asc');
             } else {
                 $el
-                    .addClass("asc")
-                    .removeClass("desc");
+                    .addClass('asc')
+                    .removeClass('desc');
             }
 
             this.collection.changeSortOrder();
+        } else {
+            $el.addClass('selected asc');
         }
 
         // Set sort property and call sort
         this.collection.changeSort(sortProperty);
         this.collection.sort();
 
-        // Rerender file list
-        this.$("tbody").empty();
-        this.collection.each(this.renderFile);
+        this.refreshList();
 
-        $el.siblings(".selected").removeClass("selected");
-        $el.addClass("selected");
+        // Remove selected class from previous selection and
+        // add class to new selection
+        $el.siblings('.selected').removeClass('selected asc desc');
+    },
+
+    /**
+     * Table row click event, selects an File instance
+     *
+     * @param event
+     */
+    fileClick: function(event) {
+        var $el = $(event.currentTarget);
+
+        $el.siblings('.selected').removeClass('selected');
+        $el.addClass('selected');
+
+        this.selectedFile = this.collection.get($el.data('id'));
+        this.renderActions();
+    },
+
+    /**
+     * Refreshes the file list. Useforl for sorting and File creation/deletion
+     */
+    refreshList: function() {
+        // Render file list
+        this.$('tbody').empty();
+        this.collection.each(this.renderFile);
     }
 });
 
@@ -204,7 +271,51 @@ var FileView = Backbone.View.extend({
     },
     render: function() {
         this.$el.html(this.template({file: this.model}));
+
+        // Add id to element for future reference
+        this.$el.data('id', this.model.id);
         return this;
+    }
+});
+
+var ActionListView = Backbone.View.extend({
+    id: 'file-actions',
+    events: {
+        'click .action': 'callAction'
+    },
+    options: {},
+    initialize: function(options) {
+        // Assign actions from options, even if undefined
+        this.actions = {'actions': options['actions']};
+        this.parent = options['parent'];
+
+        this.template = _.template($('#file-actions-template').html());
+        this.render();
+    },
+    render: function() {
+        var params = $.extend(this.actions, {selectedFile: this.parent.selectedFile});
+
+        this.$el.html(this.template(params));
+        return this;
+    },
+
+    /**
+     * Action element click event
+     *
+     * @param event
+     */
+    callAction: function(event) {
+        var $el = $(event.currentTarget);
+
+        this.trigger('performAction', $el.data('action'));
+    },
+
+    /**
+     * Helper function to remove elements related to Actions
+     */
+    close: function() {
+        this.remove();
+        this.unbind();
     }
 });
 
