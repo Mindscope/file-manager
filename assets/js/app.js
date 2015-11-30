@@ -1,3 +1,5 @@
+var LOCALSTORAGE_NAME = "files-store";
+
 var filer = {},
     initialData = [
         {"filename": "index.html", "size": 13},
@@ -20,8 +22,11 @@ filer.File = Backbone.Model.extend({
             case "jpg":
                 fileType = "JPEG image";
                 break;
-            default:
+            case "txt":
                 fileType = "Text file";
+                break;
+            default:
+                fileType = "Unknown file type"
         }
 
         this.set('fileType', fileType);
@@ -29,11 +34,24 @@ filer.File = Backbone.Model.extend({
 });
 
 filer.Files = Backbone.Collection.extend({
-    model: filer.File
+    model: filer.File,
+    localStorage: new Backbone.LocalStorage(LOCALSTORAGE_NAME),
+
+    // Override fetch method to check if localStorage is set
+    // If not set load data from JSON
+    // Else maintain default fetch behaviour
+    fetch: function(options) {
+        // check if data is already on localStorage
+        if (!localStorage.getItem(LOCALSTORAGE_NAME)) {
+            this.add(initialData);
+        } else {
+            return Backbone.Collection.prototype.fetch.call(this, options);
+        }
+    }
 });
 
 // Load initial data into files collection
-var filesCollection = new filer.Files(initialData);
+var filesCollection = new filer.Files();
 
 
 var FileListView = Backbone.View.extend({
@@ -43,15 +61,22 @@ var FileListView = Backbone.View.extend({
     initialize: function() {
         this.template = _.template($('#file-list-template').html());
         this.render();
+
+        this.collection.on("add", this.renderFile, this);
+
+        // fetch initial data
+        this.collection.fetch();
     },
     render: function() {
-        var scope = this;
         this.$el.empty();
         this.$el.append(this.template());
-        this.collection.each(function(model) {
-            scope.$el.append(new FileView({model: model.toJSON()}).render().el);
-        });
         return this;
+    },
+    renderFile: function(files) {
+        var newFileView = new FileView({model: files.toJSON()});
+        files.save();
+
+        this.$el.append(newFileView.render().el);
     }
 });
 
@@ -68,3 +93,5 @@ var FileView = Backbone.View.extend({
 });
 
 var filerAppView = new FileListView({collection: filesCollection});
+
+//filesCollection.add(initialData);
