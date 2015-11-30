@@ -6956,6 +6956,7 @@ body, html {
 
 #container {
   padding: 20px;
+  position: relative;
 }
 
 #file-list {
@@ -6970,7 +6971,7 @@ body, html {
   clear: both;
 }
 
-#file-list-table {
+.file-list {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -6981,13 +6982,13 @@ body, html {
   padding-right: 15px;
 }
 @media (min-width: 1200px) {
-  #file-list-table {
+  .file-list {
     float: left;
     width: 75%;
   }
 }
 @media (min-width: 992px) {
-  #file-list-table {
+  .file-list {
     float: left;
     width: 75%;
   }
@@ -7041,6 +7042,20 @@ table tbody > tr > td {
 }
 table tbody > tr.selected {
   background-color: #d9edf7;
+}
+
+.page {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1em;
+  transition: transform 0.5s ease;
+  transform: translate3d(100%, 0, 0);
+}
+.page.is-visible {
+  transform: translate3d(0, 0, 0);
 }
 
 /*# sourceMappingURL=main.css.map */

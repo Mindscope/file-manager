@@ -6,11 +6,12 @@ body, html
 
 #container
   padding: 20px
+  position: relative
 
 #file-list
   +make-row
 
-#file-list-table
+.file-list
   +make-lg-column(9)
   +make-md-column(9)
 
@@ -63,3 +64,16 @@ table
 
     &.selected
       background-color: $state-info-bg
+
+.page
+  position: absolute
+  top: 50px
+  right: 0
+  bottom: 0
+  left: 0
+  padding: 1em
+  transition: transform 0.5s ease
+  transform: translate3d(100%, 0, 0)
+
+  &.is-visible
+    transform: translate3d(0, 0, 0)
