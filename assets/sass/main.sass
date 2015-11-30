@@ -7,8 +7,59 @@ body, html
 #container
   padding: 20px
 
+#file-list
+  +make-row
+
+#file-list-table
+  +make-lg-column(9)
+  +make-md-column(9)
+
+#file-actions
+  +make-lg-column(3)
+  +make-md-column(3)
+
+  ul
+    list-style-type: none
+    padding: 0
+    margin-bottom: 20px
+
+    li
+      margin-bottom: 10px
+
+      a
+        padding-left: 10px
+
+      .glyphicon
+        &.bookmark
+          @extend .glyphicon-bookmark
+        &.preview
+          @extend .glyphicon-eye-open
+        &.download
+          @extend .glyphicon-download
+        &.edit
+          @extend .glyphicon-pencil
+
 table
   @extend .table
+  @extend .table-hover
 
-  tbody > tr > td
-    border: none
+  thead > tr > th.sortable
+    cursor: pointer
+
+    &.selected
+      color: blue
+
+      &.asc .glyphicon
+        @extend .glyphicon-chevron-down
+      &.desc .glyphicon
+        @extend .glyphicon-chevron-up
+
+
+  tbody > tr
+    cursor: pointer
+
+    & > td
+      border: none
+
+    &.selected
+      background-color: $state-info-bg

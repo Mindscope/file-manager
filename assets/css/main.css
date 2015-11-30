@@ -353,7 +353,7 @@ th {
   content: "\2709";
 }
 
-.glyphicon-pencil:before {
+.glyphicon-pencil:before, #file-actions ul li .glyphicon.edit:before {
   content: "\270f";
 }
 
@@ -453,7 +453,7 @@ th {
   content: "\e025";
 }
 
-.glyphicon-download:before {
+.glyphicon-download:before, #file-actions ul li .glyphicon.download:before {
   content: "\e026";
 }
 
@@ -525,7 +525,7 @@ th {
   content: "\e043";
 }
 
-.glyphicon-bookmark:before {
+.glyphicon-bookmark:before, #file-actions ul li .glyphicon.bookmark:before {
   content: "\e044";
 }
 
@@ -753,7 +753,7 @@ th {
   content: "\e104";
 }
 
-.glyphicon-eye-open:before {
+.glyphicon-eye-open:before, #file-actions ul li .glyphicon.preview:before {
   content: "\e105";
 }
 
@@ -785,11 +785,11 @@ th {
   content: "\e112";
 }
 
-.glyphicon-chevron-up:before {
+.glyphicon-chevron-up:before, table thead > tr > th.sortable.selected.desc .glyphicon:before {
   content: "\e113";
 }
 
-.glyphicon-chevron-down:before {
+.glyphicon-chevron-down:before, table thead > tr > th.sortable.selected.asc .glyphicon:before {
   content: "\e114";
 }
 
@@ -2658,7 +2658,7 @@ table > thead:first-child > tr:first-child > td {
   background-color: #f9f9f9;
 }
 
-.table-hover > tbody > tr:hover {
+.table-hover > tbody > tr:hover, table > tbody > tr:hover {
   background-color: #f5f5f5;
 }
 
@@ -2697,8 +2697,9 @@ table > tfoot > tr.active > th {
   background-color: #f5f5f5;
 }
 
-.table-hover > tbody > tr > td.active:hover,
-.table-hover > tbody > tr > th.active:hover, .table-hover > tbody > tr.active:hover > td, .table-hover > tbody > tr:hover > .active, .table-hover > tbody > tr.active:hover > th {
+.table-hover > tbody > tr > td.active:hover, table > tbody > tr > td.active:hover,
+.table-hover > tbody > tr > th.active:hover,
+table > tbody > tr > th.active:hover, .table-hover > tbody > tr.active:hover > td, table > tbody > tr.active:hover > td, .table-hover > tbody > tr:hover > .active, table > tbody > tr:hover > .active, .table-hover > tbody > tr.active:hover > th, table > tbody > tr.active:hover > th {
   background-color: #e8e8e8;
 }
 
@@ -2724,8 +2725,9 @@ table > tfoot > tr.success > th {
   background-color: #dff0d8;
 }
 
-.table-hover > tbody > tr > td.success:hover,
-.table-hover > tbody > tr > th.success:hover, .table-hover > tbody > tr.success:hover > td, .table-hover > tbody > tr:hover > .success, .table-hover > tbody > tr.success:hover > th {
+.table-hover > tbody > tr > td.success:hover, table > tbody > tr > td.success:hover,
+.table-hover > tbody > tr > th.success:hover,
+table > tbody > tr > th.success:hover, .table-hover > tbody > tr.success:hover > td, table > tbody > tr.success:hover > td, .table-hover > tbody > tr:hover > .success, table > tbody > tr:hover > .success, .table-hover > tbody > tr.success:hover > th, table > tbody > tr.success:hover > th {
   background-color: #d0e9c6;
 }
 
@@ -2751,8 +2753,9 @@ table > tfoot > tr.info > th {
   background-color: #d9edf7;
 }
 
-.table-hover > tbody > tr > td.info:hover,
-.table-hover > tbody > tr > th.info:hover, .table-hover > tbody > tr.info:hover > td, .table-hover > tbody > tr:hover > .info, .table-hover > tbody > tr.info:hover > th {
+.table-hover > tbody > tr > td.info:hover, table > tbody > tr > td.info:hover,
+.table-hover > tbody > tr > th.info:hover,
+table > tbody > tr > th.info:hover, .table-hover > tbody > tr.info:hover > td, table > tbody > tr.info:hover > td, .table-hover > tbody > tr:hover > .info, table > tbody > tr:hover > .info, .table-hover > tbody > tr.info:hover > th, table > tbody > tr.info:hover > th {
   background-color: #c4e3f3;
 }
 
@@ -2778,8 +2781,9 @@ table > tfoot > tr.warning > th {
   background-color: #fcf8e3;
 }
 
-.table-hover > tbody > tr > td.warning:hover,
-.table-hover > tbody > tr > th.warning:hover, .table-hover > tbody > tr.warning:hover > td, .table-hover > tbody > tr:hover > .warning, .table-hover > tbody > tr.warning:hover > th {
+.table-hover > tbody > tr > td.warning:hover, table > tbody > tr > td.warning:hover,
+.table-hover > tbody > tr > th.warning:hover,
+table > tbody > tr > th.warning:hover, .table-hover > tbody > tr.warning:hover > td, table > tbody > tr.warning:hover > td, .table-hover > tbody > tr:hover > .warning, table > tbody > tr:hover > .warning, .table-hover > tbody > tr.warning:hover > th, table > tbody > tr.warning:hover > th {
   background-color: #faf2cc;
 }
 
@@ -2805,8 +2809,9 @@ table > tfoot > tr.danger > th {
   background-color: #f2dede;
 }
 
-.table-hover > tbody > tr > td.danger:hover,
-.table-hover > tbody > tr > th.danger:hover, .table-hover > tbody > tr.danger:hover > td, .table-hover > tbody > tr:hover > .danger, .table-hover > tbody > tr.danger:hover > th {
+.table-hover > tbody > tr > td.danger:hover, table > tbody > tr > td.danger:hover,
+.table-hover > tbody > tr > th.danger:hover,
+table > tbody > tr > th.danger:hover, .table-hover > tbody > tr.danger:hover > td, table > tbody > tr.danger:hover > td, .table-hover > tbody > tr:hover > .danger, table > tbody > tr:hover > .danger, .table-hover > tbody > tr.danger:hover > th, table > tbody > tr.danger:hover > th {
   background-color: #ebcccc;
 }
 
@@ -6953,8 +6958,89 @@ body, html {
   padding: 20px;
 }
 
+#file-list {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+#file-list:before, #file-list:after {
+  content: " ";
+  display: table;
+}
+#file-list:after {
+  clear: both;
+}
+
+#file-list-table {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 1200px) {
+  #file-list-table {
+    float: left;
+    width: 75%;
+  }
+}
+@media (min-width: 992px) {
+  #file-list-table {
+    float: left;
+    width: 75%;
+  }
+}
+
+#file-actions {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 1200px) {
+  #file-actions {
+    float: left;
+    width: 25%;
+  }
+}
+@media (min-width: 992px) {
+  #file-actions {
+    float: left;
+    width: 25%;
+  }
+}
+#file-actions ul {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+#file-actions ul li {
+  margin-bottom: 10px;
+}
+#file-actions ul li a {
+  padding-left: 10px;
+}
+
+table thead > tr > th.sortable {
+  cursor: pointer;
+}
+table thead > tr > th.sortable.selected {
+  color: blue;
+}
+table tbody > tr {
+  cursor: pointer;
+}
 table tbody > tr > td {
   border: none;
+}
+table tbody > tr.selected {
+  background-color: #d9edf7;
 }
 
 /*# sourceMappingURL=main.css.map */
