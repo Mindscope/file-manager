@@ -348,7 +348,6 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
     refreshList: function() {
         // Render file list
         this.$('tbody').empty();
-        console.log("Heyo", this.collection);
         this.collection.each(this.renderFile, this);
     }
 });
