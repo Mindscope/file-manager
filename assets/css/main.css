@@ -7044,6 +7044,10 @@ table tbody > tr.selected {
   background-color: #d9edf7;
 }
 
+.file i {
+  margin: 0 5px 0 -20px;
+}
+
 /*.page
  * position: absolute
  * top: 50px
