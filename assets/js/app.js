@@ -29,13 +29,12 @@ var LOCALSTORAGE_NAME = 'files-store',
     };
 
 var Filer = {
-    views: {},
+    Views: {},
     Extensions: {},
     router: null,
 
     init: function () {
-
-        this.instance = new Filer.views.App();
+        this.router = new Filer.Router();
         Backbone.history.start();
     }
 };
@@ -44,29 +43,39 @@ Filer.Router = Backbone.Router.extend({
 
     routes: {
         '': 'home',
-        //'bookmarks': 'bookmarks'
+        'bookmarks': 'bookmarks'
         //'create': 'create',
         //'edit': 'edit',
+    },
+    _currentView: null,
+
+    views: [],
+
+    showView: function (view, args) {
+        args = args || {};
+
+        if (view != this._currentView) {
+            if (this._currentView != null && this._currentView.remove != null) {
+                this._currentView.remove();
+                delete this._currentView;
+            }
+            this._currentView = new view(args);
+        }
     },
 
     home: function () {
         // Load initial data into files collection
         var filesCollection = new Filer.FileCollection();
-        var view = new Filer.views.FileListView({collection: filesCollection});
 
-        Filer.instance.goto(view);
+        this.showView(Filer.Views.FileListView, {collection: filesCollection});
     },
 
-    /*bookmarks: function() {
-        console.log("Hello bookmarks");
-
+    bookmarks: function() {
         var filesCollection = new Filer.FileCollection();
         var bookmarked = new Filer.FileCollection(filesCollection.where({ bookmarked : true }));
 
-        var view = new Filer.views.BookmarkListView({collection: bookmarked});
-
-        Filer.instance.goto(view);
-    }*/
+        this.showView(Filer.Views.BookmarkListView, {collection: bookmarked});
+    }
 });
 
 Filer.File = Backbone.Model.extend({
@@ -152,79 +161,27 @@ Filer.FileCollection = Backbone.Collection.extend({
     }
 });
 
-Filer.Extensions.View = Backbone.View.extend({
-    initialize: function () {
-        this.router = new Filer.Router();
-    },
+Filer.Views.BaseView = Backbone.View.extend({
+    remove: function(clear) {
+        clear = clear || false;
 
-    render: function( options ) {
+        console.log("%s", (clear) ? "Removing" : "Cleansing", this);
 
-        options = options || {};
+        // If clear is true call super remove method
+        // Else empty HTML element
+        if (clear)
+            Backbone.View.prototype.remove.call(this, arguments);
+        else
+            this.$el.empty();
 
-        if (options.page === true) {
-            this.$el.addClass('page');
-        }
-
-        return this;
-
-    },
-
-    transitionIn: function ( callback ) {
-
-        var view = this,
-            delay;
-
-        var transitionIn = function () {
-            view.$el.addClass('is-visible');
-            view.$el.one('transitionend', function () {
-                if (_.isFunction(callback)) {
-                    callback();
-                }
-            })
-        };
-
-        _.delay(transitionIn, 20);
-
-    },
-
-    transitionOut: function ( callback ) {
-
-        var view = this;
-
-        view.$el.removeClass( 'is-visible' );
-        view.$el.one('transitionend', function () {
-            if (_.isFunction( callback )) {
-                callback();
-            }
-        });
-
-    }
-
-});
-
-Filer.views.App = Filer.Extensions.View.extend({
-
-    el: 'body',
-    goto: function (view) {
-
-        var previous = this.currentPage || null;
-        var next = view;
-
-        if (previous) {
-            previous.transitionOut(function () {
-                previous.remove();
-            });
-        }
-
-        next.render({ page: true });
-        this.$el.append( next.$el );
-        next.transitionIn();
-        this.currentPage = next;
+        this.unbind().off();
+        this.stopListening();
+        this.undelegateEvents();
     }
 });
 
-Filer.views.FileListView = Filer.Extensions.View.extend({
-    id: 'file-list',
+Filer.Views.FileListView = Filer.Views.BaseView.extend({
+    el: "#file-list",
     templateName: '#file-list-template',
 
     // Need to respond to clicks on the table headers
@@ -239,22 +196,30 @@ Filer.views.FileListView = Filer.Extensions.View.extend({
     initialize: function() {
         this.template = _.template($(this.templateName).html());
 
-        //this.collection.on('add', this.renderFile, this);
+        this.listenTo(this.collection, 'add', this.renderFile, this);
 
-        // fetch initial data
-        this.collection.fetch();
+        this.render();
     },
     render: function() {
         this.$el.empty();
         this.$el.append(this.template());
 
-        //this.collection.each(this.renderFile);
-
-        console.log("rendering...");
+        // fetch initial data
+        this.collection.fetch();
 
         this.renderActions();
 
-        return Filer.Extensions.View.prototype.render.apply(this, arguments);
+        return this;
+    },
+
+    /**
+     * Override close method to close actions view
+     */
+    remove: function() {
+        if (this.actionsView)
+            this.actionsView.remove(true);
+
+        Filer.Views.BaseView.prototype.remove.apply(this, arguments);
     },
 
     /**
@@ -262,15 +227,25 @@ Filer.views.FileListView = Filer.Extensions.View.extend({
      */
     renderActions: function() {
         var actionParams = {parent: this};
+
         if (this.selectedFile !== null)
             actionParams['actions'] = this.selectedFile.get('actions');
 
-        if (this.actionsView)
-            this.actionsView.close();
+        console.log("Rendering actions for:", this.actionsView);
 
-        this.actionsView = new Filer.views.ActionListView(actionParams);
-        this.actionsView.on('performAction', this.performAction, this);
-        this.$el.append(this.actionsView.render().el);
+        if (this.actionsView) {
+            this.actionsView.remove(true);
+            this.actionsView = null;
+        }
+
+        console.log("After delete", this.actionsView);
+
+        this.actionsView = new Filer.Views.ActionListView(actionParams);
+        //this.actionsView.on('performAction', this.performAction, this);
+
+        console.log("After instantiation:", this.actionsView);
+
+        this.$el.append(this.actionsView.el);
     },
 
     /**
@@ -288,10 +263,10 @@ Filer.views.FileListView = Filer.Extensions.View.extend({
      * @param files
      */
     renderFile: function(files) {
-        var newFileView = new Filer.views.FileView({model: files.toJSON()});
+        var newFileView = new Filer.Views.FileView({model: files.toJSON()});
         files.save();
 
-        var $tbody = this.$('tbody');
+        var $tbody = this.$("tbody");
         $tbody.append(newFileView.render().el);
     },
 
@@ -358,7 +333,7 @@ Filer.views.FileListView = Filer.Extensions.View.extend({
     }
 });
 
-Filer.views.FileView = Backbone.View.extend({
+Filer.Views.FileView = Filer.Views.BaseView.extend({
     tagName: 'tr',
     className: 'file',
     initialize: function() {
@@ -375,7 +350,7 @@ Filer.views.FileView = Backbone.View.extend({
     }
 });
 
-Filer.views.ActionListView = Backbone.View.extend({
+Filer.Views.ActionListView = Filer.Views.BaseView.extend({
     id: 'file-actions',
     events: {
         'click .action': 'callAction'
@@ -394,7 +369,7 @@ Filer.views.ActionListView = Backbone.View.extend({
 
         this.$el.html(this.template(params));
 
-        return Filer.Extensions.View.prototype.render.apply(this, arguments);
+        return this;
     },
 
     /**
@@ -406,26 +381,17 @@ Filer.views.ActionListView = Backbone.View.extend({
         var $el = $(event.currentTarget);
 
         this.trigger('performAction', $el.data('action'));
-    },
-
-    /**
-     * Helper function to remove elements related to Actions
-     */
-    close: function() {
-        this.remove();
-        this.unbind();
     }
 });
 
-/*Filer.views.BookmarkListView = Filer.views.FileListView.extend({
-    className: 'bookmark-list',
+Filer.Views.BookmarkListView = Filer.Views.FileListView.extend({
     templateName: '#bookmark-list-template',
 
     initialize: function() {
         this.template = _.template($(this.templateName).html());
         this.render();
     }
-});*/
+});
 
 $(function() {
     Filer.init();
