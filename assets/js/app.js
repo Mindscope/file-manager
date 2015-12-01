@@ -35,9 +35,9 @@ var Filer = {
 
     init: function () {
 
+        // Set initial data to localStorage if no data is saved
         if (!localStorage.getItem(LOCALSTORAGE_NAME)) {
 
-            // Set initial data to localStorage
             var initialDataCollection = new Filer.FileCollection();
             initialDataCollection.add(INITIAL_DATA);
 
@@ -46,22 +46,11 @@ var Filer = {
             });
         }
 
+        // Start router and history
         this.router = new Filer.Router();
         Backbone.history.start();
     }
 };
-
-// Override fetch method to check if localStorage is set
-// If not set load data from JSON
-// Else maintain default fetch behaviour
-/*fetch: function(options) {
-    // check if data is already on localStorage
-    if (!localStorage.getItem(LOCALSTORAGE_NAME)) {
-        this.add(INITIAL_DATA);
-    } else {
-        return Backbone.Collection.prototype.fetch.call(this, options);
-    }
-}*/
 
 Filer.Router = Backbone.Router.extend({
 
@@ -97,7 +86,7 @@ Filer.Router = Backbone.Router.extend({
         var filesCollection = new Filer.FileCollection();
         filesCollection.fetch();
 
-        var bookmarked = new Filer.FileCollection(filesCollection.where({ bookmarked : true }));
+        var bookmarked = new Filer.FileCollection(filesCollection.bookmarked());
 
         this.showView(Filer.Views.BookmarkListView, {collection: bookmarked});
     }
@@ -159,6 +148,10 @@ Filer.FileCollection = Backbone.Collection.extend({
 
     // Sort order
     sortOrder: 1,
+
+    bookmarked: function() {
+        return this.filter(function(file){return file.get('bookmarked') == true;});
+    },
 
     // Change sort property
     changeSort: function (sortProperty) {
@@ -260,7 +253,7 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
     performAction: function(action) {
         switch (action) {
             case AVAILABLE_ACTIONS.BOOKMARK:
-                this.selectedFile.set('bookmarked', !this.selectedFile.get('bookmarked'));
+                this.performActionBookmark();
                 break;
             case AVAILABLE_ACTIONS.DOWNLOAD:
                 break;
@@ -269,7 +262,10 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
             case AVAILABLE_ACTIONS.EDIT:
                 break;
         }
+    },
 
+    performActionBookmark: function(){
+        this.selectedFile.set('bookmarked', !this.selectedFile.get('bookmarked'));
         this.selectedFile.save();
     },
 
@@ -285,9 +281,8 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         var $tbody = this.$("tbody"),
             newFileHtml = newFileView.render().el;
 
-        if (this.selectedFile && this.selectedFile.get('id') == file.get('id')) {
+        if (this.selectedFile && this.selectedFile.get('id') == file.get('id'))
             $(newFileHtml).addClass('selected');
-        }
 
         $tbody.append(newFileHtml);
     },
@@ -353,6 +348,7 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
     refreshList: function() {
         // Render file list
         this.$('tbody').empty();
+        console.log("Heyo", this.collection);
         this.collection.each(this.renderFile, this);
     }
 });
@@ -402,6 +398,8 @@ Filer.Views.ActionListView = Filer.Views.BaseView.extend({
      * @param event
      */
     callAction: function(event) {
+        event.preventDefault();
+
         var $el = $(event.currentTarget);
 
         this.trigger('performAction', $el.data('action'));
@@ -409,7 +407,14 @@ Filer.Views.ActionListView = Filer.Views.BaseView.extend({
 });
 
 Filer.Views.BookmarkListView = Filer.Views.FileListView.extend({
-    templateName: '#bookmark-list-template'
+    templateName: '#bookmark-list-template',
+
+    performActionBookmark: function(){
+        this.collection.remove(this.selectedFile);
+        this.selectedFile.set('bookmarked', !this.selectedFile.get('bookmarked'));
+        this.selectedFile.save();
+        this.selectedFile = null;
+    }
 });
 
 $(function() {
