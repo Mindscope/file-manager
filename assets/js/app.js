@@ -282,8 +282,14 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         var newFileView = new Filer.Views.FileView({model: file.toJSON()});
         file.save();
 
-        var $tbody = this.$("tbody");
-        $tbody.append(newFileView.render().el);
+        var $tbody = this.$("tbody"),
+            newFileHtml = newFileView.render().el;
+
+        if (this.selectedFile && this.selectedFile.get('id') == file.get('id')) {
+            $(newFileHtml).addClass('selected');
+        }
+
+        $tbody.append(newFileHtml);
     },
 
     /**
@@ -336,7 +342,7 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         $el.addClass('selected');
 
         this.selectedFile = _.clone(this.collection.get($el.data('id')));
-        this.selectedFile.on('change', this.refreshList, this);
+        this.listenTo(this.selectedFile, 'change', this.refreshList);
 
         this.renderActions();
     },
@@ -347,7 +353,7 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
     refreshList: function() {
         // Render file list
         this.$('tbody').empty();
-        this.collection.each(this.renderFile);
+        this.collection.each(this.renderFile, this);
     }
 });
 
@@ -359,7 +365,7 @@ Filer.Views.FileView = Filer.Views.BaseView.extend({
         this.render();
     },
     render: function() {
-        this.$el.html(this.template({file: this.model}));
+        this.$el.html(this.template({file:this.model}));
 
         // Add id to element for future reference
         this.$el.data('id', this.model.id);
