@@ -62,7 +62,7 @@
             </div>
         </script>
         <script type="text/template" id="file-template">
-            <td><%= file.filename %></td>
+            <td><% if (file.bookmarked) { %><i class="glyphicon glyphicon-bookmark"></i><% } %><%= file.filename %></td>
             <td><%= file.filetype %></td>
             <td><%= file.size %></td>
         </script>

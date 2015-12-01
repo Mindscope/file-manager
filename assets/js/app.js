@@ -7,7 +7,7 @@ var LOCALSTORAGE_NAME = 'files-store',
     },
     INITIAL_DATA = [
         {id: 1, 'filename': 'index.html', 'size': 13},
-        {id: 2, 'filename': 'contact.html', 'size': 12},
+        {id: 2, 'filename': 'contact.html', 'size': 12, bookmarked: true},
         {id: 3, 'filename': 'sample.png', 'size': 65}
     ],
     DEFAULT_ACTIONS_PER_TYPE = {
@@ -34,10 +34,31 @@ var Filer = {
     router: null,
 
     init: function () {
+
+        // Set initial data to localStorage
+        var initialDataCollection = new Filer.FileCollection();
+        initialDataCollection.add(INITIAL_DATA);
+
+        initialDataCollection.each(function(file){
+            file.save();
+        });
+
         this.router = new Filer.Router();
         Backbone.history.start();
     }
 };
+
+// Override fetch method to check if localStorage is set
+// If not set load data from JSON
+// Else maintain default fetch behaviour
+/*fetch: function(options) {
+    // check if data is already on localStorage
+    if (!localStorage.getItem(LOCALSTORAGE_NAME)) {
+        this.add(INITIAL_DATA);
+    } else {
+        return Backbone.Collection.prototype.fetch.call(this, options);
+    }
+}*/
 
 Filer.Router = Backbone.Router.extend({
 
@@ -66,12 +87,15 @@ Filer.Router = Backbone.Router.extend({
     home: function () {
         // Load initial data into files collection
         var filesCollection = new Filer.FileCollection();
+        filesCollection.fetch();
 
         this.showView(Filer.Views.FileListView, {collection: filesCollection});
     },
 
     bookmarks: function() {
         var filesCollection = new Filer.FileCollection();
+        filesCollection.fetch();
+
         var bookmarked = new Filer.FileCollection(filesCollection.where({ bookmarked : true }));
 
         this.showView(Filer.Views.BookmarkListView, {collection: bookmarked});
@@ -146,18 +170,6 @@ Filer.FileCollection = Backbone.Collection.extend({
 
     changeSortOrder: function() {
         this.sortOrder = -1 * this.sortOrder;
-    },
-
-    // Override fetch method to check if localStorage is set
-    // If not set load data from JSON
-    // Else maintain default fetch behaviour
-    fetch: function(options) {
-        // check if data is already on localStorage
-        if (!localStorage.getItem(LOCALSTORAGE_NAME)) {
-            this.add(INITIAL_DATA);
-        } else {
-            return Backbone.Collection.prototype.fetch.call(this, options);
-        }
     }
 });
 
@@ -204,8 +216,7 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         this.$el.empty();
         this.$el.append(this.template());
 
-        // fetch initial data
-        this.collection.fetch();
+        this.collection.each(this.renderFile, this);
 
         this.renderActions();
 
@@ -231,19 +242,13 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         if (this.selectedFile !== null)
             actionParams['actions'] = this.selectedFile.get('actions');
 
-        console.log("Rendering actions for:", this.actionsView);
-
         if (this.actionsView) {
             this.actionsView.remove(true);
             this.actionsView = null;
         }
 
-        console.log("After delete", this.actionsView);
-
         this.actionsView = new Filer.Views.ActionListView(actionParams);
-        //this.actionsView.on('performAction', this.performAction, this);
-
-        console.log("After instantiation:", this.actionsView);
+        this.actionsView.on('performAction', this.performAction, this);
 
         this.$el.append(this.actionsView.el);
     },
@@ -385,12 +390,7 @@ Filer.Views.ActionListView = Filer.Views.BaseView.extend({
 });
 
 Filer.Views.BookmarkListView = Filer.Views.FileListView.extend({
-    templateName: '#bookmark-list-template',
-
-    initialize: function() {
-        this.template = _.template($(this.templateName).html());
-        this.render();
-    }
+    templateName: '#bookmark-list-template'
 });
 
 $(function() {
