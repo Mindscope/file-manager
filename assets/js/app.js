@@ -35,13 +35,16 @@ var Filer = {
 
     init: function () {
 
-        // Set initial data to localStorage
-        var initialDataCollection = new Filer.FileCollection();
-        initialDataCollection.add(INITIAL_DATA);
+        if (!localStorage.getItem(LOCALSTORAGE_NAME)) {
 
-        initialDataCollection.each(function(file){
-            file.save();
-        });
+            // Set initial data to localStorage
+            var initialDataCollection = new Filer.FileCollection();
+            initialDataCollection.add(INITIAL_DATA);
+
+            initialDataCollection.each(function (file) {
+                file.save();
+            });
+        }
 
         this.router = new Filer.Router();
         Backbone.history.start();
@@ -69,8 +72,6 @@ Filer.Router = Backbone.Router.extend({
         //'edit': 'edit',
     },
     _currentView: null,
-
-    views: [],
 
     showView: function (view, args) {
         args = args || {};
@@ -177,8 +178,6 @@ Filer.Views.BaseView = Backbone.View.extend({
     remove: function(clear) {
         clear = clear || false;
 
-        console.log("%s", (clear) ? "Removing" : "Cleansing", this);
-
         // If clear is true call super remove method
         // Else empty HTML element
         if (clear)
@@ -259,7 +258,19 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
      * @param action
      */
     performAction: function(action) {
-        console.log(action);
+        switch (action) {
+            case AVAILABLE_ACTIONS.BOOKMARK:
+                this.selectedFile.set('bookmarked', !this.selectedFile.get('bookmarked'));
+                break;
+            case AVAILABLE_ACTIONS.DOWNLOAD:
+                break;
+            case AVAILABLE_ACTIONS.PREVIEW:
+                break;
+            case AVAILABLE_ACTIONS.EDIT:
+                break;
+        }
+
+        this.selectedFile.save();
     },
 
     /**
@@ -267,9 +278,9 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
      *
      * @param files
      */
-    renderFile: function(files) {
-        var newFileView = new Filer.Views.FileView({model: files.toJSON()});
-        files.save();
+    renderFile: function(file) {
+        var newFileView = new Filer.Views.FileView({model: file.toJSON()});
+        file.save();
 
         var $tbody = this.$("tbody");
         $tbody.append(newFileView.render().el);
@@ -324,12 +335,14 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         $el.siblings('.selected').removeClass('selected');
         $el.addClass('selected');
 
-        this.selectedFile = this.collection.get($el.data('id'));
+        this.selectedFile = _.clone(this.collection.get($el.data('id')));
+        this.selectedFile.on('change', this.refreshList, this);
+
         this.renderActions();
     },
 
     /**
-     * Refreshes the file list. Useful for sorting and File creation/deletion
+     * Refreshes the file list. Useful for sorting and File changes
      */
     refreshList: function() {
         // Render file list
