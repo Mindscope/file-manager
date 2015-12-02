@@ -260,17 +260,20 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
     _initCollection: null,
 
     initialize: function() {
+        Filer.Views.BaseView.prototype.initialize.apply(this, arguments);
+
         this.template = _.template($(this.templateName).html());
 
         this._initCollection = _.clone(this.collection);
 
-        this.listenTo(this.collection, 'add', this.renderFile, this);
-
         // Set a document wide event to catch the generic click
         var view = this;
-        $('body').on('click', function(event){
-            view.unselectFile();
+        $('body').on('click', function(){
+            if (view.bodyClickCallback)
+                view.bodyClickCallback();
         });
+
+        this.listenTo(this.collection, 'add', this.renderFile, this);
 
         this.render();
     },
@@ -291,10 +294,16 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
      * Override close method to close actions view
      */
     remove: function() {
+        Filer.Views.BaseView.prototype.remove.apply(this, arguments);
+
+        $('body').off('click');
+
         if (this.actionsView)
             this.actionsView.remove(true);
+    },
 
-        Filer.Views.BaseView.prototype.remove.apply(this, arguments);
+    bodyClickCallback: function() {
+        this.unselectFile();
     },
 
     /**
