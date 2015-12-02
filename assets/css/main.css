@@ -2939,7 +2939,7 @@ output {
   color: #555555;
 }
 
-.form-control {
+.form-control, #search-file input[type=text] {
   display: block;
   width: 100%;
   height: 34px;
@@ -2957,23 +2957,23 @@ output {
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
-.form-control:focus {
+.form-control:focus, #search-file input[type=text]:focus {
   border-color: #66afe9;
   outline: 0;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
-.form-control::-moz-placeholder {
+.form-control::-moz-placeholder, #search-file input[type=text]::-moz-placeholder {
   color: #999;
   opacity: 1;
 }
-.form-control:-ms-input-placeholder {
+.form-control:-ms-input-placeholder, #search-file input[type=text]:-ms-input-placeholder {
   color: #999;
 }
-.form-control::-webkit-input-placeholder {
+.form-control::-webkit-input-placeholder, #search-file input[type=text]::-webkit-input-placeholder {
   color: #999;
 }
-.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+.form-control[disabled], #search-file input[disabled][type=text], .form-control[readonly], #search-file input[readonly][type=text], fieldset[disabled] .form-control, fieldset[disabled] #search-file input[type=text], #search-file fieldset[disabled] input[type=text] {
   cursor: not-allowed;
   background-color: #eeeeee;
   opacity: 1;
@@ -2995,37 +2995,43 @@ input[type="search"] {
     line-height: 34px;
   }
 
-  input[type="date"].input-sm, .input-group-sm > input[type="date"].form-control,
+  input[type="date"].input-sm, .input-group-sm > input[type="date"].form-control, #search-file .input-group-sm > input[type="date"][type=text],
   .input-group-sm > input[type="date"].input-group-addon,
   .input-group-sm > .input-group-btn > input[type="date"].btn,
   input[type="time"].input-sm,
   .input-group-sm > input[type="time"].form-control,
+  #search-file .input-group-sm > input[type="time"][type=text],
   .input-group-sm > input[type="time"].input-group-addon,
   .input-group-sm > .input-group-btn > input[type="time"].btn,
   input[type="datetime-local"].input-sm,
   .input-group-sm > input[type="datetime-local"].form-control,
+  #search-file .input-group-sm > input[type="datetime-local"][type=text],
   .input-group-sm > input[type="datetime-local"].input-group-addon,
   .input-group-sm > .input-group-btn > input[type="datetime-local"].btn,
   input[type="month"].input-sm,
   .input-group-sm > input[type="month"].form-control,
+  #search-file .input-group-sm > input[type="month"][type=text],
   .input-group-sm > input[type="month"].input-group-addon,
   .input-group-sm > .input-group-btn > input[type="month"].btn {
     line-height: 30px;
   }
 
-  input[type="date"].input-lg, .input-group-lg > input[type="date"].form-control,
+  input[type="date"].input-lg, .input-group-lg > input[type="date"].form-control, #search-file .input-group-lg > input[type="date"][type=text],
   .input-group-lg > input[type="date"].input-group-addon,
   .input-group-lg > .input-group-btn > input[type="date"].btn,
   input[type="time"].input-lg,
   .input-group-lg > input[type="time"].form-control,
+  #search-file .input-group-lg > input[type="time"][type=text],
   .input-group-lg > input[type="time"].input-group-addon,
   .input-group-lg > .input-group-btn > input[type="time"].btn,
   input[type="datetime-local"].input-lg,
   .input-group-lg > input[type="datetime-local"].form-control,
+  #search-file .input-group-lg > input[type="datetime-local"][type=text],
   .input-group-lg > input[type="datetime-local"].input-group-addon,
   .input-group-lg > .input-group-btn > input[type="datetime-local"].btn,
   input[type="month"].input-lg,
   .input-group-lg > input[type="month"].form-control,
+  #search-file .input-group-lg > input[type="month"][type=text],
   .input-group-lg > input[type="month"].input-group-addon,
   .input-group-lg > .input-group-btn > input[type="month"].btn {
     line-height: 46px;
@@ -3105,16 +3111,16 @@ input[type="checkbox"] {
   padding-bottom: 7px;
   margin-bottom: 0;
 }
-.form-control-static.input-lg, .input-group-lg > .form-control-static.form-control,
+.form-control-static.input-lg, .input-group-lg > .form-control-static.form-control, #search-file .input-group-lg > input.form-control-static[type=text],
 .input-group-lg > .form-control-static.input-group-addon,
-.input-group-lg > .input-group-btn > .form-control-static.btn, .form-control-static.input-sm, .input-group-sm > .form-control-static.form-control,
+.input-group-lg > .input-group-btn > .form-control-static.btn, .form-control-static.input-sm, .input-group-sm > .form-control-static.form-control, #search-file .input-group-sm > input.form-control-static[type=text],
 .input-group-sm > .form-control-static.input-group-addon,
 .input-group-sm > .input-group-btn > .form-control-static.btn {
   padding-left: 0;
   padding-right: 0;
 }
 
-.input-sm, .input-group-sm > .form-control,
+.input-sm, .input-group-sm > .form-control, #search-file .input-group-sm > input[type=text],
 .input-group-sm > .input-group-addon,
 .input-group-sm > .input-group-btn > .btn {
   height: 30px;
@@ -3141,7 +3147,7 @@ select[multiple].input-sm,
   height: auto;
 }
 
-.form-group-sm .form-control {
+.form-group-sm .form-control, .form-group-sm #search-file input[type=text], #search-file .form-group-sm input[type=text] {
   height: 30px;
   padding: 5px 10px;
   font-size: 12px;
@@ -3149,17 +3155,19 @@ select[multiple].input-sm,
   border-radius: 3px;
 }
 
-select.form-group-sm .form-control {
+select.form-group-sm .form-control, select.form-group-sm #search-file input[type=text], #search-file select.form-group-sm input[type=text] {
   height: 30px;
   line-height: 30px;
 }
 
-textarea.form-group-sm .form-control,
-select[multiple].form-group-sm .form-control {
+textarea.form-group-sm .form-control, textarea.form-group-sm #search-file input[type=text], #search-file textarea.form-group-sm input[type=text],
+select[multiple].form-group-sm .form-control,
+select[multiple].form-group-sm #search-file input[type=text],
+#search-file select[multiple].form-group-sm input[type=text] {
   height: auto;
 }
 
-.input-lg, .input-group-lg > .form-control,
+.input-lg, .input-group-lg > .form-control, #search-file .input-group-lg > input[type=text],
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
   height: 46px;
@@ -3186,7 +3194,7 @@ select[multiple].input-lg,
   height: auto;
 }
 
-.form-group-lg .form-control {
+.form-group-lg .form-control, .form-group-lg #search-file input[type=text], #search-file .form-group-lg input[type=text] {
   height: 46px;
   padding: 10px 16px;
   font-size: 18px;
@@ -3194,20 +3202,22 @@ select[multiple].input-lg,
   border-radius: 6px;
 }
 
-select.form-group-lg .form-control {
+select.form-group-lg .form-control, select.form-group-lg #search-file input[type=text], #search-file select.form-group-lg input[type=text] {
   height: 46px;
   line-height: 46px;
 }
 
-textarea.form-group-lg .form-control,
-select[multiple].form-group-lg .form-control {
+textarea.form-group-lg .form-control, textarea.form-group-lg #search-file input[type=text], #search-file textarea.form-group-lg input[type=text],
+select[multiple].form-group-lg .form-control,
+select[multiple].form-group-lg #search-file input[type=text],
+#search-file select[multiple].form-group-lg input[type=text] {
   height: auto;
 }
 
 .has-feedback {
   position: relative;
 }
-.has-feedback .form-control {
+.has-feedback .form-control, .has-feedback #search-file input[type=text], #search-file .has-feedback input[type=text] {
   padding-right: 42.5px;
 }
 
@@ -3224,7 +3234,7 @@ select[multiple].form-group-lg .form-control {
   pointer-events: none;
 }
 
-.input-lg + .form-control-feedback, .input-group-lg > .form-control + .form-control-feedback,
+.input-lg + .form-control-feedback, .input-group-lg > .form-control + .form-control-feedback, #search-file .input-group-lg > input[type=text] + .form-control-feedback,
 .input-group-lg > .input-group-addon + .form-control-feedback,
 .input-group-lg > .input-group-btn > .btn + .form-control-feedback {
   width: 46px;
@@ -3232,7 +3242,7 @@ select[multiple].form-group-lg .form-control {
   line-height: 46px;
 }
 
-.input-sm + .form-control-feedback, .input-group-sm > .form-control + .form-control-feedback,
+.input-sm + .form-control-feedback, .input-group-sm > .form-control + .form-control-feedback, #search-file .input-group-sm > input[type=text] + .form-control-feedback,
 .input-group-sm > .input-group-addon + .form-control-feedback,
 .input-group-sm > .input-group-btn > .btn + .form-control-feedback {
   width: 30px;
@@ -3248,12 +3258,12 @@ select[multiple].form-group-lg .form-control {
 .has-success .checkbox-inline, .has-success.radio label, .has-success.checkbox label, .has-success.radio-inline label, .has-success.checkbox-inline label {
   color: #3c763d;
 }
-.has-success .form-control {
+.has-success .form-control, .has-success #search-file input[type=text], #search-file .has-success input[type=text] {
   border-color: #3c763d;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-.has-success .form-control:focus {
+.has-success .form-control:focus, .has-success #search-file input[type=text]:focus, #search-file .has-success input[type=text]:focus {
   border-color: #2b542c;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
@@ -3275,12 +3285,12 @@ select[multiple].form-group-lg .form-control {
 .has-warning .checkbox-inline, .has-warning.radio label, .has-warning.checkbox label, .has-warning.radio-inline label, .has-warning.checkbox-inline label {
   color: #8a6d3b;
 }
-.has-warning .form-control {
+.has-warning .form-control, .has-warning #search-file input[type=text], #search-file .has-warning input[type=text] {
   border-color: #8a6d3b;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-.has-warning .form-control:focus {
+.has-warning .form-control:focus, .has-warning #search-file input[type=text]:focus, #search-file .has-warning input[type=text]:focus {
   border-color: #66512c;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
@@ -3302,12 +3312,12 @@ select[multiple].form-group-lg .form-control {
 .has-error .checkbox-inline, .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label, .has-error.checkbox-inline label {
   color: #a94442;
 }
-.has-error .form-control {
+.has-error .form-control, .has-error #search-file input[type=text], #search-file .has-error input[type=text] {
   border-color: #a94442;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-.has-error .form-control:focus {
+.has-error .form-control:focus, .has-error #search-file input[type=text]:focus, #search-file .has-error input[type=text]:focus {
   border-color: #843534;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
@@ -3341,7 +3351,7 @@ select[multiple].form-group-lg .form-control {
     margin-bottom: 0;
     vertical-align: middle;
   }
-  .form-inline .form-control {
+  .form-inline .form-control, .form-inline #search-file input[type=text], #search-file .form-inline input[type=text] {
     display: inline-block;
     width: auto;
     vertical-align: middle;
@@ -3355,10 +3365,12 @@ select[multiple].form-group-lg .form-control {
   }
   .form-inline .input-group .input-group-addon,
   .form-inline .input-group .input-group-btn,
-  .form-inline .input-group .form-control {
+  .form-inline .input-group .form-control,
+  .form-inline .input-group #search-file input[type=text],
+  #search-file .form-inline .input-group input[type=text] {
     width: auto;
   }
-  .form-inline .input-group > .form-control {
+  .form-inline .input-group > .form-control, .form-inline #search-file .input-group > input[type=text], #search-file .form-inline .input-group > input[type=text] {
     width: 100%;
   }
   .form-inline .control-label {
@@ -4064,7 +4076,7 @@ tbody.collapse.in {
   padding-left: 0;
   padding-right: 0;
 }
-.input-group .form-control {
+.input-group .form-control, .input-group #search-file input[type=text], #search-file .input-group input[type=text] {
   position: relative;
   z-index: 2;
   float: left;
@@ -4074,12 +4086,16 @@ tbody.collapse.in {
 
 .input-group-addon,
 .input-group-btn,
-.input-group .form-control {
+.input-group .form-control,
+.input-group #search-file input[type=text],
+#search-file .input-group input[type=text] {
   display: table-cell;
 }
 .input-group-addon:not(:first-child):not(:last-child),
 .input-group-btn:not(:first-child):not(:last-child),
-.input-group .form-control:not(:first-child):not(:last-child) {
+.input-group .form-control:not(:first-child):not(:last-child),
+.input-group #search-file input[type=text]:not(:first-child):not(:last-child),
+#search-file .input-group input[type=text]:not(:first-child):not(:last-child) {
   border-radius: 0;
 }
 
@@ -4101,14 +4117,14 @@ tbody.collapse.in {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-.input-group-addon.input-sm,
+.input-group-addon.input-sm, #search-file .input-group-sm > input.input-group-addon[type=text],
 .input-group-sm > .input-group-addon,
 .input-group-sm > .input-group-btn > .input-group-addon.btn {
   padding: 5px 10px;
   font-size: 12px;
   border-radius: 3px;
 }
-.input-group-addon.input-lg,
+.input-group-addon.input-lg, #search-file .input-group-lg > input.input-group-addon[type=text],
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .input-group-addon.btn {
   padding: 10px 16px;
@@ -4120,7 +4136,7 @@ tbody.collapse.in {
   margin-top: 0;
 }
 
-.input-group .form-control:first-child,
+.input-group .form-control:first-child, .input-group #search-file input[type=text]:first-child, #search-file .input-group input[type=text]:first-child,
 .input-group-addon:first-child,
 .input-group-btn:first-child > .btn,
 .input-group-btn:first-child > .btn-group > .btn,
@@ -4135,7 +4151,7 @@ tbody.collapse.in {
   border-right: 0;
 }
 
-.input-group .form-control:last-child,
+.input-group .form-control:last-child, .input-group #search-file input[type=text]:last-child, #search-file .input-group input[type=text]:last-child,
 .input-group-addon:last-child,
 .input-group-btn:last-child > .btn,
 .input-group-btn:last-child > .btn-group > .btn,
@@ -4578,7 +4594,7 @@ tbody.collapse.in {
     margin-bottom: 0;
     vertical-align: middle;
   }
-  .navbar-form .form-control {
+  .navbar-form .form-control, .navbar-form #search-file input[type=text], #search-file .navbar-form input[type=text] {
     display: inline-block;
     width: auto;
     vertical-align: middle;
@@ -4592,10 +4608,12 @@ tbody.collapse.in {
   }
   .navbar-form .input-group .input-group-addon,
   .navbar-form .input-group .input-group-btn,
-  .navbar-form .input-group .form-control {
+  .navbar-form .input-group .form-control,
+  .navbar-form .input-group #search-file input[type=text],
+  #search-file .navbar-form .input-group input[type=text] {
     width: auto;
   }
-  .navbar-form .input-group > .form-control {
+  .navbar-form .input-group > .form-control, .navbar-form #search-file .input-group > input[type=text], #search-file .navbar-form .input-group > input[type=text] {
     width: 100%;
   }
   .navbar-form .control-label {
@@ -6960,8 +6978,24 @@ body, html {
 }
 
 #file-container {
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -moz-perspective: 1000;
+  -ms-perspective: 1000;
+  perspective: 1000;
   margin-left: -15px;
   margin-right: -15px;
+  padding: 0 15px;
+  transition: transform 0.3s ease;
+  transform: translate3d(0, 0, 0);
 }
 #file-container:before, #file-container:after {
   content: " ";
@@ -6970,11 +7004,18 @@ body, html {
 #file-container:after {
   clear: both;
 }
+#file-container.transition.out {
+  transform: translate3d(-100%, 0, 0);
+}
+#file-container.transition.in {
+  transform: translate3d(0, 0, 0);
+}
 
 #navigation {
   margin-left: -15px;
   margin-right: -15px;
-  margin-bottom: 20px;
+  padding: 0 15px;
+  margin: 20px 0;
 }
 #navigation:before, #navigation:after {
   content: " ";
@@ -6982,6 +7023,9 @@ body, html {
 }
 #navigation:after {
   clear: both;
+}
+#navigation .btn {
+  margin-bottom: 5px;
 }
 #navigation > div {
   position: relative;
@@ -7015,6 +7059,45 @@ body, html {
   text-align: right;
 }
 
+#file-form-container {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  float: left;
+  width: 100%;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 992px) {
+  #file-form-container {
+    float: left;
+    width: 83.33333%;
+  }
+}
+@media (min-width: 992px) {
+  #file-form-container {
+    margin-left: 8.33333%;
+  }
+}
+@media (min-width: 768px) {
+  #file-form-container {
+    float: left;
+    width: 83.33333%;
+  }
+}
+@media (min-width: 768px) {
+  #file-form-container {
+    margin-left: 8.33333%;
+  }
+}
+
 #search-file {
   position: relative;
   min-height: 1px;
@@ -7024,19 +7107,30 @@ body, html {
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
+  position: relative;
+  float: left;
+  width: 100%;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
   margin-bottom: 20px;
-}
-@media (min-width: 1200px) {
-  #search-file {
-    float: left;
-    width: 100%;
-  }
 }
 @media (min-width: 992px) {
   #search-file {
     float: left;
     width: 100%;
   }
+}
+@media (min-width: 768px) {
+  #search-file {
+    float: left;
+    width: 100%;
+  }
+}
+#search-file input[type=text] {
+  display: inline-block;
+  width: 200px;
+  clear: none;
 }
 
 .file-list {
@@ -7048,14 +7142,20 @@ body, html {
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
-}
-@media (min-width: 1200px) {
-  .file-list {
-    float: left;
-    width: 75%;
-  }
+  position: relative;
+  float: left;
+  width: 100%;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 @media (min-width: 992px) {
+  .file-list {
+    float: left;
+    width: 83.33333%;
+  }
+}
+@media (min-width: 768px) {
   .file-list {
     float: left;
     width: 75%;
@@ -7071,14 +7171,20 @@ body, html {
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
-}
-@media (min-width: 1200px) {
-  #file-actions {
-    float: left;
-    width: 25%;
-  }
+  position: relative;
+  float: left;
+  width: 100%;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 @media (min-width: 992px) {
+  #file-actions {
+    float: left;
+    width: 16.66667%;
+  }
+}
+@media (min-width: 768px) {
   #file-actions {
     float: left;
     width: 25%;
@@ -7116,17 +7222,8 @@ table tbody > tr.selected {
   margin: 0 5px 0 -19px;
 }
 
-/*.page
- * position: absolute
- * top: 50px
- * right: 0
- * bottom: 0
- * left: 0
- * padding: 1em
- * transition: transform 0.5s ease
- * transform: translate3d(100%, 0, 0)
- *
- * &.is-visible
- *   transform: translate3d(0, 0, 0) */
+textarea {
+  min-height: 150px;
+}
 
 /*# sourceMappingURL=main.css.map */

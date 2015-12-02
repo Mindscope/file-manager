@@ -9,11 +9,41 @@ body, html
   position: relative
 
 #file-container
+  -webkit-transform: translateZ(0)
+  -moz-transform: translateZ(0)
+  -ms-transform: translateZ(0)
+  -o-transform: translateZ(0)
+  transform: translateZ(0)
+
+  -webkit-backface-visibility: hidden
+  -moz-backface-visibility: hidden
+  -ms-backface-visibility: hidden
+  backface-visibility: hidden
+
+  -webkit-perspective: 1000
+  -moz-perspective: 1000
+  -ms-perspective: 1000
+  perspective: 1000
+
   +make-row
+  padding: 0 15px
+
+  transition: transform 0.3s ease
+  transform: translate3d(0, 0, 0)
+
+  &.transition
+    &.out
+      transform: translate3d(-100%, 0, 0)
+    &.in
+      transform: translate3d(0, 0, 0)
 
 #navigation
   +make-row
-  margin-bottom: 20px
+  padding: 0 15px
+  margin: 20px 0
+
+  .btn
+    margin-bottom: 5px
 
   & > div
     +make-md-column(6)
@@ -23,18 +53,34 @@ body, html
     &:nth-child(2)
       text-align: right
 
+#file-form-container
+  +make-md-column(10)
+  +make-md-column-offset(1)
+  +make-sm-column(10)
+  +make-sm-column-offset(1)
+  +make-xs-column(12)
+
 #search-file
-  +make-lg-column(12)
   +make-md-column(12)
+  +make-sm-column(12)
+  +make-xs-column(12)
   margin-bottom: 20px
 
+  input[type=text]
+    @extend .form-control
+    display: inline-block
+    width: 200px
+    clear: none
+
 .file-list
-  +make-lg-column(9)
-  +make-md-column(9)
+  +make-md-column(10)
+  +make-sm-column(9)
+  +make-xs-column(12)
 
 #file-actions
-  +make-lg-column(3)
-  +make-md-column(3)
+  +make-md-column(2)
+  +make-sm-column(3)
+  +make-xs-column(12)
 
   ul
     list-style-type: none
@@ -86,15 +132,6 @@ table
   i
     margin: 0 5px 0 -19px
 
-/*.page
-  position: absolute
-  top: 50px
-  right: 0
-  bottom: 0
-  left: 0
-  padding: 1em
-  transition: transform 0.5s ease
-  transform: translate3d(100%, 0, 0)
+textarea
+  min-height: 150px
 
-  &.is-visible
-    transform: translate3d(0, 0, 0)*/
