@@ -149,7 +149,7 @@ Filer.FileCollection = Backbone.Collection.extend({
     // Sort order
     sortOrder: 1,
 
-    _searchFields: ['filename', 'filetype'],
+    _searchFields: ['filename'],
 
     /**
      * Special filter that returns all FIle instances that are bookmarked
