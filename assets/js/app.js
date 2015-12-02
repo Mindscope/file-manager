@@ -619,6 +619,82 @@ Filer.Views.SearchView = Filer.Views.BaseView.extend({
     }
 });
 
+Filer.Views.EditView = Filer.Views.BaseView.extend({
+    el: "#file-container",
+    events: {
+        'click #submit-form': 'submitForm',
+        'click #cancel-form': 'cancelForm'
+    },
+    selectedFile: undefined,
+    initialize: function(id) {
+        this.constructor.__super__.initialize.apply(this, arguments);
+
+        if (id !== undefined) {
+            var files = new Filer.FileCollection();
+            files.fetch();
+
+            // try to get File instance for given id
+            try {
+                this.selectedFile = files.find(function(file) { return file.get('id') == id; });
+            } catch( err ) {
+                console.error(err);
+            }
+        }
+
+        this.template = _.template($('#edit-file-template').html());
+        this.render();
+    },
+
+    submitForm: function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var data = this.$( 'form' ).serializeArray(),
+            collection = new Filer.FileCollection(),
+            fileData = {},
+            file;
+
+        $.map(data, function( prop ){
+            fileData[prop['name']] = prop['value'];
+        });
+
+        // TODO: form validation
+
+        // Only create TXT files so append txt extension
+        if (fileData[ 'filename' ].split('.').pop() !== 'txt') {
+            fileData[ 'filename' ] += '.txt';
+        }
+
+        if (this.selectedFile) {
+            file = this.selectedFile;
+            file.set(fileData);
+        } else {
+            file = new Filer.File(fileData);
+        }
+
+        collection.add(file);
+        file.save();
+
+        // navigate to homepage
+        location.href ="#"
+    },
+
+    cancelForm: function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // navigate to homepage
+        location.href ="#"
+    },
+
+    render: function() {
+        this.$el.empty();
+        this.$el.append(this.template({selectedFile: this.selectedFile}));
+
+        return this;
+    }
+});
+
 $(function() {
     Filer.init();
 });
