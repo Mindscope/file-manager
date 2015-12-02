@@ -252,6 +252,8 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
 
         this.renderActions();
 
+        this.renderSearch();
+
         return this;
     },
 
@@ -461,59 +463,11 @@ Filer.Views.ActionListView = Filer.Views.BaseView.extend({
 Filer.Views.BookmarkListView = Filer.Views.FileListView.extend({
     templateName: '#bookmark-list-template',
 
-    /**
-     * Override bookmark action. On this view triggering this
-     * action will only remove the selected file from the list
-     */
     performActionBookmark: function(){
         this.collection.remove(this.selectedFile);
         this.selectedFile.set('bookmarked', !this.selectedFile.get('bookmarked'));
         this.selectedFile.save();
-
-        this.unselectFile();
-    }
-});
-
-Filer.Views.SearchView = Filer.Views.BaseView.extend({
-    tagName: 'form',
-    id: 'search-file',
-    events: {
-        'click #submit-search-file': 'submitSearch',
-        'click #clear-search-file': 'clearSearch'
-    },
-
-    initialize: function() {
-        this.template = _.template($('#file-search-template').html());
-        this.render();
-    },
-
-    render: function() {
-        this.$el.empty();
-        this.$el.html(this.template());
-
-        return this;
-    },
-
-    submitSearch: function(event) {
-        event.preventDefault();
-
-        this.trigger('search', this.getQuery());
-    },
-
-    clearSearch: function(event) {
-        event.preventDefault();
-        this.$('input[name=search]').val("");
-
-        this.trigger('search', this.getQuery());
-    },
-
-    /**
-     * Retrieves search value from input
-     *
-     * @returns String
-     */
-    getQuery: function() {
-        return this.$('input[name=search]').val();
+        this.selectedFile = null;
     }
 });
 
