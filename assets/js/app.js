@@ -242,6 +242,12 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
 
         this.listenTo(this.collection, 'add', this.renderFile, this);
 
+        // Set a document wide event to catch the generic click
+        var view = this;
+        $('body').on('click', function(event){
+            view.unselectFile();
+        });
+
         this.render();
     },
     render: function() {
