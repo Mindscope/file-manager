@@ -245,7 +245,7 @@ Filer.Views.BaseView = Backbone.View.extend({
 });
 
 Filer.Views.FileListView = Filer.Views.BaseView.extend({
-    el: "#file-list",
+    el: "#file-container",
     templateName: '#file-list-template',
 
     // Need to respond to clicks on the table headers
