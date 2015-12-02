@@ -382,10 +382,11 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
                 this.performActionBookmark();
                 break;
             case AVAILABLE_ACTIONS.DOWNLOAD:
-                break;
             case AVAILABLE_ACTIONS.PREVIEW:
+                alert("Action not implemented");
                 break;
             case AVAILABLE_ACTIONS.EDIT:
+                location.href = '#/file/' + this.selectedFile.get('id');
                 break;
         }
     },
@@ -526,6 +527,7 @@ Filer.Views.ActionListView = Filer.Views.BaseView.extend({
         'click .action': 'callAction'
     },
     options: {},
+
     initialize: function(options) {
         // Assign actions from options, even if undefined
         this.actions = {'actions': options['actions']};
@@ -534,6 +536,7 @@ Filer.Views.ActionListView = Filer.Views.BaseView.extend({
         this.template = _.template($('#file-actions-template').html());
         this.render();
     },
+
     render: function() {
         var params = $.extend(this.actions, {selectedFile: this.parent.selectedFile});
 
