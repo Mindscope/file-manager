@@ -383,6 +383,19 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
     },
 
     /**
+     *
+     */
+    unselectFile: function(){
+       if (this.selectedFile == null || this.selectedFile == undefined)
+           return;
+
+       this.$('.file[data-id='+ this.selectedFile.get('id') +']').removeClass('selected');
+       this.selectedFile = null;
+
+       this.renderActions();
+    },
+
+    /**
      * Refreshes the file list. Useful for sorting and File changes
      */
     refreshList: function() {
