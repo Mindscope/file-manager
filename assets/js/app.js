@@ -27,11 +27,11 @@ var LOCALSTORAGE_NAME = 'files-store',
             AVAILABLE_ACTIONS.PREVIEW,
             AVAILABLE_ACTIONS.EDIT
         ]
-    };
+    },
+    PAGE_TRANSITION_INTERVAL = 300;
 
 var Filer = {
     Views: {},
-    Extensions: {},
     router: null,
 
     init: function () {
@@ -57,21 +57,35 @@ Filer.Router = Backbone.Router.extend({
 
     routes: {
         '': 'home',
-        'bookmarks': 'bookmarks'
-        //'create': 'create',
-        //'edit': 'edit',
+        'bookmarks': 'bookmarks',
+        'file': 'create',
+        'file/:id': 'edit'
     },
     _currentView: null,
 
     showView: function (view, args) {
+        var interval = PAGE_TRANSITION_INTERVAL,
+            that = this;
+
         args = args || {};
 
-        if (view != this._currentView) {
-            if (this._currentView != null && this._currentView.remove != null) {
-                this._currentView.remove();
-                delete this._currentView;
+        if ( view != this._currentView ) {
+            if ( this._currentView != null ) {
+                this._currentView.$el.removeClass("in").addClass("transition out");
+            } else {
+                interval = 0;
             }
-            this._currentView = new view(args);
+
+            setTimeout(function(){
+                if ( that._currentView != null && that._currentView.remove != null)
+                    that._currentView.remove();
+
+                that._currentView = null;
+
+                that._currentView = new view( args );
+                that._currentView.$el.removeClass("out").addClass("in");
+            }, interval);
+
         }
     },
 
@@ -80,16 +94,24 @@ Filer.Router = Backbone.Router.extend({
         var filesCollection = new Filer.FileCollection();
         filesCollection.fetch();
 
-        this.showView(Filer.Views.FileListView, {collection: filesCollection});
+        this.showView( Filer.Views.FileListView, { collection: filesCollection } );
     },
 
     bookmarks: function() {
         var filesCollection = new Filer.FileCollection();
         filesCollection.fetch();
 
-        var bookmarked = new Filer.FileCollection(filesCollection.bookmarked());
+        var bookmarked = new Filer.FileCollection( filesCollection.bookmarked() );
 
-        this.showView(Filer.Views.BookmarkListView, {collection: bookmarked});
+        this.showView( Filer.Views.BookmarkListView, { collection: bookmarked } );
+    },
+
+    create: function() {
+        this.showView( Filer.Views.EditView );
+    },
+
+    edit: function( id ){
+        this.showView( Filer.Views.EditView, id );
     }
 });
 
@@ -99,7 +121,8 @@ Filer.File = Backbone.Model.extend({
         'filename': undefined,
         'content': undefined,
         'actions': [],
-        'bookmarked': false
+        'bookmarked': false,
+        'size': Math.round(Math.random() * 30)
     },
     initialize : function() {
         // Set fileType attribute according to file extension
