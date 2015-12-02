@@ -574,7 +574,6 @@ Filer.Views.BookmarkListView = Filer.Views.FileListView.extend({
 });
 
 Filer.Views.SearchView = Filer.Views.BaseView.extend({
-    tagName: 'form',
     id: 'search-file',
     events: {
         'click #submit-search-file': 'submitSearch',
