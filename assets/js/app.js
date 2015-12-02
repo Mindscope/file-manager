@@ -149,11 +149,44 @@ Filer.FileCollection = Backbone.Collection.extend({
     // Sort order
     sortOrder: 1,
 
+    _searchFields: ['filename', 'filetype'],
+
+    /**
+     * Special filter that returns all FIle instances that are bookmarked
+     *
+     * @returns {Array.<T>|*|{TAG, CLASS, ATTR, CHILD, PSEUDO}}
+     */
     bookmarked: function() {
         return this.filter(function(file){return file.get('bookmarked') == true;});
     },
 
-    // Change sort property
+    /**
+     * Search File instances for given key within the
+     * searchable fields
+     *
+     * @param key
+     */
+    search: function( query ) {
+        var matches = [];
+        var collection = this;
+        var pattern = new RegExp( $.trim( query ).replace( / /gi, '|' ), "i");
+
+        this.each(function(file){
+            for (var attr in collection._searchFields) {
+                if( file.attributes.hasOwnProperty(collection._searchFields[attr]) && pattern.test(file.attributes[collection._searchFields[attr]]) ){
+                    matches.push(file);
+                }
+            }
+        });
+
+        return matches;
+    },
+
+    /**
+     * Set sort property
+     *
+     * @param sortProperty
+     */
     changeSort: function (sortProperty) {
         this.comparator = this.strategies[sortProperty];
 
@@ -162,6 +195,9 @@ Filer.FileCollection = Backbone.Collection.extend({
         }
     },
 
+    /**
+     * Invert sort order
+     */
     changeSortOrder: function() {
         this.sortOrder = -1 * this.sortOrder;
     }
