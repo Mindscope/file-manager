@@ -287,12 +287,46 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         this.$el.append(this.actionsView.el);
     },
 
+    renderSearch: function() {
+        if ( this.searchView ) {
+            this.searchView.remove(true);
+            this.searchView = null;
+        }
+
+        this.searchView = new Filer.Views.SearchView();
+        this.listenTo( this.searchView, 'search', this.performSearch, this );
+
+        this.$el.prepend( this.searchView.el );
+    },
+
+    performSearch: function( query ) {
+        this.collection = new Filer.FileCollection(this._initCollection.search( query ));
+
+        // Check if selectedFile is still on the collection
+        if (this.selectedFile) {
+            var selection = false,
+                selectedFileId = this.selectedFile.get( 'id' );
+
+            this.collection.each(function( file ){
+                if (selectedFileId == file.get( 'id' )) {
+                    selection = true;
+                    return false;
+                }
+            });
+
+            if (!selection)
+                this.unselectFile();
+        }
+
+        this.refreshList();
+    },
+
     /**
      * Performs the given action on the current selectedFile
      *
      * @param action
      */
-    performAction: function(action) {
+    performAction: function( action ) {
         switch (action) {
             case AVAILABLE_ACTIONS.BOOKMARK:
                 this.performActionBookmark();
@@ -463,11 +497,59 @@ Filer.Views.ActionListView = Filer.Views.BaseView.extend({
 Filer.Views.BookmarkListView = Filer.Views.FileListView.extend({
     templateName: '#bookmark-list-template',
 
+    /**
+     * Override bookmark action. On this view triggering this
+     * action will only remove the selected file from the list
+     */
     performActionBookmark: function(){
         this.collection.remove(this.selectedFile);
         this.selectedFile.set('bookmarked', !this.selectedFile.get('bookmarked'));
         this.selectedFile.save();
-        this.selectedFile = null;
+
+        this.unselectFile();
+    }
+});
+
+Filer.Views.SearchView = Filer.Views.BaseView.extend({
+    tagName: 'form',
+    id: 'search-file',
+    events: {
+        'click #submit-search-file': 'submitSearch',
+        'click #clear-search-file': 'clearSearch'
+    },
+
+    initialize: function() {
+        this.template = _.template($('#file-search-template').html());
+        this.render();
+    },
+
+    render: function() {
+        this.$el.empty();
+        this.$el.html(this.template());
+
+        return this;
+    },
+
+    submitSearch: function(event) {
+        event.preventDefault();
+
+        this.trigger('search', this.getQuery());
+    },
+
+    clearSearch: function(event) {
+        event.preventDefault();
+        this.$('input[name=search]').val("");
+
+        this.trigger('search', this.getQuery());
+    },
+
+    /**
+     * Retrieves search value from input
+     *
+     * @returns String
+     */
+    getQuery: function() {
+        return this.$('input[name=search]').val();
     }
 });
 
