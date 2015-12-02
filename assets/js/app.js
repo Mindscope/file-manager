@@ -164,12 +164,12 @@ Filer.FileCollection = Backbone.Collection.extend({
      * Search File instances for given key within the
      * searchable fields
      *
-     * @param key
+     * @param query
      */
     search: function( query ) {
         var matches = [];
         var collection = this;
-        var pattern = new RegExp( $.trim( query ).replace( / /gi, '|' ), "i");
+        var pattern = new RegExp( $.trim( query).replace(/\*/g, '').replace( / /gi, '|' ), "i");
 
         this.each(function(file){
             for (var attr in collection._searchFields) {
