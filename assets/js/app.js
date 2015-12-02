@@ -232,9 +232,13 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
 
     selectedFile: null,
     actionsView: null,
+    searchView: null,
+    _initCollection: null,
 
     initialize: function() {
         this.template = _.template($(this.templateName).html());
+
+        this._initCollection = _.clone(this.collection);
 
         this.listenTo(this.collection, 'add', this.renderFile, this);
 
