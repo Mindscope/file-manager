@@ -62,9 +62,27 @@
             </div>
         </script>
         <script type="text/template" id="file-search-template">
-            <input type="text" placeholder="Search files" name="search">
-            <button id="submit-search-file"><i class="glyphicon glyphicon-search"></i></button>
-            <button id="clear-search-file"><i class="glyphicon glyphicon-remove"></i></button>
+            <form class="form-inline">
+                <input type="text" placeholder="Search files" name="search">
+                <button class="btn btn-default" id="submit-search-file"><i class="glyphicon glyphicon-search"></i></button>
+                <button class="btn btn-default" id="clear-search-file"><i class="glyphicon glyphicon-remove"></i></button>
+            </form>
+        </script>
+        <script type="text/template" id="edit-file-template">
+            <div id="file-form-container" class="page">
+                <form>
+                    <div class="form-group">
+                        <label for="file-form-filename">Filename</label>
+                        <input id="file-form-filename"  class="form-control" name="filename" type="text" <% if (typeof(selectedFile) != "undefined") { %>value="<%= selectedFile.attributes.filename %>"<% } %>/>
+                    </div>
+                    <div class="form-group">
+                        <label for="file-form-content">Content</label>
+                        <textarea id="file-form-content" class="form-control" name="content" ><% if (typeof(selectedFile) != "undefined") { %><%= selectedFile.attributes.content %><% } %></textarea>
+                    </div>
+                    <button class="btn btn-default" id="submit-form">Save</button>
+                    <button class="btn btn-danger" id="cancel-form">Cancel</button>
+                </form>
+            </div>
         </script>
         <script type="text/template" id="file-template">
             <td><% if (file.bookmarked) { %><i class="glyphicon glyphicon-bookmark"></i><% } %><%= file.filename %></td>
