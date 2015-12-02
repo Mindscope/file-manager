@@ -431,16 +431,17 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
     },
 
     /**
-     *
+     * unselects the selectedFile by redrawing the actions view and removing
+     * the selected clas from HTML element
      */
     unselectFile: function(){
-       if (this.selectedFile == null || this.selectedFile == undefined)
-           return;
+        if (this.selectedFile == null || this.selectedFile == undefined)
+            return;
 
-       this.$('.file[data-id='+ this.selectedFile.get('id') +']').removeClass('selected');
-       this.selectedFile = null;
+        this.$('.file.selected').removeClass('selected');
+        this.selectedFile = null;
 
-       this.renderActions();
+        this.renderActions();
     },
 
     /**
