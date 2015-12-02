@@ -293,6 +293,9 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         this.$el.append(this.actionsView.el);
     },
 
+    /**
+     * Renders search form
+     */
     renderSearch: function() {
         if ( this.searchView ) {
             this.searchView.remove(true);
@@ -305,6 +308,14 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         this.$el.prepend( this.searchView.el );
     },
 
+    /**
+     * Filters the initial collection with the given query.
+     *
+     * If selectedFile is not null then check if search contains it
+     * or not and acts accordingly.
+     *
+     * @param query
+     */
     performSearch: function( query ) {
         this.collection = new Filer.FileCollection(this._initCollection.search( query ));
 
@@ -346,6 +357,11 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
         }
     },
 
+    /**
+     * Bookmar action callback
+     *
+     * TODO: get a dynamic way for defining action callbacks
+     */
     performActionBookmark: function(){
         this.selectedFile.set('bookmarked', !this.selectedFile.get('bookmarked'));
         this.selectedFile.save();
