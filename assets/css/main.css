@@ -6971,6 +6971,30 @@ body, html {
   clear: both;
 }
 
+#search-file {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 20px;
+}
+@media (min-width: 1200px) {
+  #search-file {
+    float: left;
+    width: 100%;
+  }
+}
+@media (min-width: 992px) {
+  #search-file {
+    float: left;
+    width: 100%;
+  }
+}
+
 .file-list {
   position: relative;
   min-height: 1px;
