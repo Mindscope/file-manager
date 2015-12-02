@@ -6,9 +6,10 @@ var LOCALSTORAGE_NAME = 'files-store',
         EDIT: 'edit'
     },
     INITIAL_DATA = [
-        {id: 1, 'filename': 'index.html', 'size': 13},
-        {id: 2, 'filename': 'contact.html', 'size': 12, bookmarked: true},
-        {id: 3, 'filename': 'sample.png', 'size': 65}
+        {'filename': 'index.html', 'size': 13},
+        {'filename': 'contact.html', 'size': 12, bookmarked: true},
+        {'filename': 'sample.png', 'size': 65},
+        {'filename': 'sample.txt', content: 'Lorem Ipsum dolor sit amet.'}
     ],
     DEFAULT_ACTIONS_PER_TYPE = {
         'default': null,
