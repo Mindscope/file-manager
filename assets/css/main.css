@@ -6959,16 +6959,60 @@ body, html {
   position: relative;
 }
 
-#file-list {
+#file-container {
   margin-left: -15px;
   margin-right: -15px;
 }
-#file-list:before, #file-list:after {
+#file-container:before, #file-container:after {
   content: " ";
   display: table;
 }
-#file-list:after {
+#file-container:after {
   clear: both;
+}
+
+#navigation {
+  margin-left: -15px;
+  margin-right: -15px;
+  margin-bottom: 20px;
+}
+#navigation:before, #navigation:after {
+  content: " ";
+  display: table;
+}
+#navigation:after {
+  clear: both;
+}
+#navigation > div {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  float: left;
+  width: 50%;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 992px) {
+  #navigation > div {
+    float: left;
+    width: 50%;
+  }
+}
+@media (min-width: 768px) {
+  #navigation > div {
+    float: left;
+    width: 50%;
+  }
+}
+#navigation > div:nth-child(2) {
+  text-align: right;
 }
 
 #search-file {

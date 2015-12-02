@@ -8,8 +8,20 @@ body, html
   padding: 20px
   position: relative
 
-#file-list
+#file-container
   +make-row
+
+#navigation
+  +make-row
+  margin-bottom: 20px
+
+  & > div
+    +make-md-column(6)
+    +make-sm-column(6)
+    +make-xs-column(6)
+
+    &:nth-child(2)
+      text-align: right
 
 #search-file
   +make-lg-column(12)
