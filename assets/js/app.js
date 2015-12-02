@@ -375,6 +375,9 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
      * @param event
      */
     headerClick: function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
         var $el = $(event.currentTarget),
             sortProperty = $el.attr('data-sort');
 
@@ -413,6 +416,9 @@ Filer.Views.FileListView = Filer.Views.BaseView.extend({
      * @param event
      */
     fileClick: function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
         var $el = $(event.currentTarget);
 
         $el.siblings('.selected').removeClass('selected');
@@ -493,6 +499,7 @@ Filer.Views.ActionListView = Filer.Views.BaseView.extend({
      */
     callAction: function(event) {
         event.preventDefault();
+        event.stopPropagation();
 
         var $el = $(event.currentTarget);
 
@@ -538,12 +545,15 @@ Filer.Views.SearchView = Filer.Views.BaseView.extend({
 
     submitSearch: function(event) {
         event.preventDefault();
+        event.stopPropagation();
 
         this.trigger('search', this.getQuery());
     },
 
     clearSearch: function(event) {
         event.preventDefault();
+        event.stopPropagation();
+
         this.$('input[name=search]').val("");
 
         this.trigger('search', this.getQuery());
